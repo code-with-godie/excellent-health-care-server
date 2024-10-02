@@ -40,13 +40,9 @@ export const getSinglePost = async (req, res, next) => {
 };
 export const getPrograms = async (req, res, next) => {
   try {
-    const {
-      user: { userID },
-      body,
-    } = req;
-    const user = await Users.findById(userID);
-    if (!user || user.role !== 'admin')
-      throw new BadRequestError('UNAUTHORIZED OPERATION');
+    // const user = await Users.findById(userID);
+    // if (!user || user.role !== 'admin')
+    //   throw new BadRequestError('UNAUTHORIZED OPERATION');
     const programs = await Program.find({}).populate();
     return res.status(StatusCodes.OK).json({ success: true, programs });
   } catch (error) {

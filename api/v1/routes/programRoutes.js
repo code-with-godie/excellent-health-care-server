@@ -6,6 +6,6 @@ import {
 import authorize from '../../../middlewares/authentication.js';
 const Router = express.Router();
 
-Router.route('/').get(authorize, getPrograms).post(authorize, createProgram);
+Router.route('/').get(getPrograms).post(authorize, createProgram);
 
 export default Router;
