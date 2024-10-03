@@ -46,20 +46,16 @@ export const getPrograms = async (req, res, next) => {
     next(error);
   }
 };
-export const updatePost = async (req, res, next) => {
+export const updateTopic = async (req, res, next) => {
   try {
     const {
       params: { id: postID },
       user: { userID },
     } = req;
-    let post = await Topic.findById(postID);
-    if (!post) {
-      throw new BadRequestError('no post with the provided id!');
-    }
-    if (post.user?.toString() !== userID) {
-      throw new BadRequestError('you can only update your own posts!');
-    }
-    post = await Topic.findByIdAndUpdate(
+    const user = await Users.findById(userID);
+    if (!user || user.role !== 'admin')
+      throw new BadRequestError('UNAUTHORIZED OPERATION');
+    const post = await Topic.findByIdAndUpdate(
       postID,
       { ...req.body },
       { new: true, runValidators: true }
@@ -69,20 +65,18 @@ export const updatePost = async (req, res, next) => {
     next(error);
   }
 };
-export const deletePost = async (req, res, next) => {
+export const deleteTopic = async (req, res, next) => {
   try {
     const {
       params: { id: postID },
       user: { userID },
     } = req;
-    const post = await Topic.findById(postID);
+    const user = await Users.findById(userID);
 
-    if (!post) {
-      throw new BadRequestError('no post with the provided id!');
-    }
-    if (post.userID !== userID) {
-      throw new NotFoundError('you can only delete your own posts!');
-    }
+    if (!user || user.role !== 'admin')
+      throw new BadRequestError('UNAUTHORIZED OPERATION');
+
+    await Topic.findByIdAndDelete(postID);
     return res
       .status(StatusCodes.OK)
       .json({ success: true, message: 'post  successfully deleted!' });
