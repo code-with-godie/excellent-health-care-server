@@ -7,12 +7,14 @@ import {
   updateUser,
   getSingleUser,
   enroll,
+  sendEmail,
 } from '../controllers/usersController.js';
 import authorize from '../../../middlewares/authentication.js';
 
 const Router = express.Router();
 Router.route('/').get(authorize, getAllUsers);
 Router.route('/login').post(login);
+Router.route('/send-email').post(sendEmail);
 Router.route('/enroll/:id').post(authorize, enroll);
 Router.route('/register').post(createAccount);
 Router.route('/auth').post(auth);

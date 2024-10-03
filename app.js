@@ -8,6 +8,7 @@ import connectDB from './db/connect.js';
 import errorHandlerMiddleware from './middlewares/error-handler.js';
 import usersRoutes from './api/v1/routes/userRoutes.js';
 import programRoutes from './api/v1/routes/programRoutes.js';
+import topicRoutes from './api/v1/routes/topicRoutes.js';
 // import './socket/server.js';
 //app config
 const app = express();
@@ -28,6 +29,7 @@ app.get('/', (req, res) => {
 });
 app.use('/api/v1/excellent-health/users', usersRoutes);
 app.use('/api/v1/excellent-health/programs', programRoutes);
+app.use('/api/v1/excellent-health/topics', topicRoutes);
 
 //not found route
 app.use(notFound);

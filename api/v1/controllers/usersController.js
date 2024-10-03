@@ -3,7 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import NotFoundError from '../../../errors/not-found.js';
 import BadRequestError from '../../../errors/bad-request.js';
 import UnauthenticatedError from '../../../errors/unauthenticated.js';
-
+import nodemailer from 'nodemailer';
 export const createAccount = async (req, res, next) => {
   try {
     const {
@@ -179,6 +179,41 @@ export const enroll = async (req, res, next) => {
       success: true,
       user: newUser,
       message: 'successfull unenrolled!',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const sendEmail = async (req, res, next) => {
+  try {
+    const {
+      body: { message, title, subject, to },
+    } = req;
+    const html = `
+    <h2> ${title} </h2>
+    <p> ${message} </p>
+    `;
+    const transporter = nodemailer.createTransport({
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for port 465, false for other ports
+      auth: {
+        user: process.env.PRIMARY_EMAIL,
+        pass: process.env.PRIMARY_EMAIL_PASSWORD,
+      },
+    });
+    const info = await transporter.sendMail({
+      from: '1903627@students.kcau.ac.ke', // sender address
+      to, // list of receivers
+      subject, // Subject line
+      html: html,
+    });
+
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      info,
+      message: 'email successfully sent!',
     });
   } catch (error) {
     next(error);
